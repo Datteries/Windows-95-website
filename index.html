@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Windows 95 Desktop (Stable Build)</title>
+<title>Windows 95 Desktop (Resizable)</title>
 
 <style>
 :root{
@@ -34,11 +34,15 @@ body{
 .window{
   position:absolute;
   width:420px;
+  min-width:220px;
+  min-height:120px;
   background:var(--win);
   border:2px solid var(--light);
   box-shadow: inset -2px -2px var(--dark), inset 2px 2px var(--light);
   display:none;
   z-index:10;
+  resize: both;
+  overflow: auto;
 }
 
 .title-bar{
@@ -105,7 +109,11 @@ button, input, textarea{
 
 canvas{ background:white; border:1px solid black; cursor:crosshair; }
 
-textarea{ width:100%; height:180px; resize:none; }
+textarea{
+  width:100%;
+  height:180px;
+  resize: none;
+}
 
 iframe{
   width:100%;
@@ -153,7 +161,7 @@ iframe{
   </div>
 </div>
 
-<!-- Browser FIXED -->
+<!-- Browser -->
 <div id="browser" class="window" style="top:100px;left:300px;">
   <div class="title-bar">Browser <div class="close-btn" onclick="closeWindow('browser')">X</div></div>
   <div class="content">
@@ -202,10 +210,9 @@ function closeStart(){
 function saveNote(){
   localStorage.setItem('note',document.getElementById('note').value);
 }
+document.getElementById('note').value=localStorage.getItem('note')||"";
 
-document.getElementById('note').value = localStorage.getItem('note') || "";
-
-// Browser FIX
+// Browser
 function loadPage(){
   let url=document.getElementById('url').value.trim();
   if(!url) return;
@@ -232,7 +239,7 @@ canvas.addEventListener('mousemove',e=>{
 
 function clearCanvas(){ctx.clearRect(0,0,canvas.width,canvas.height);}
 
-// Drag
+// Drag windows
 window.addEventListener('mousedown',e=>{
   const bar=e.target.closest('.title-bar'); if(!bar)return;
   drag=bar.parentElement;
