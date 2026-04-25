@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Windows 95 Desktop (Vertical Resize Fix)</title>
+<title>Windows 95 Desktop (YouTube + Smart Browser)</title>
 
 <style>
 :root{
@@ -31,7 +31,6 @@ body{
   cursor:pointer;
 }
 
-/* WINDOWS NOW VERTICALLY RESIZABLE (Y AXIS FOCUS) */
 .window{
   position:absolute;
   width:420px;
@@ -42,8 +41,8 @@ body{
   box-shadow: inset -2px -2px var(--dark), inset 2px 2px var(--light);
   display:none;
   z-index:10;
-  resize: vertical;
-  overflow:auto;
+  resize:both;
+  overflow:hidden;
 }
 
 .title-bar{
@@ -68,7 +67,13 @@ body{
   font-weight:bold;
 }
 
-.content{ padding:10px; font-size:13px; }
+.content{
+  padding:10px;
+  font-size:13px;
+  height:calc(100% - 26px);
+  display:flex;
+  flex-direction:column;
+}
 
 button, input, textarea{
   background:var(--win);
@@ -110,14 +115,14 @@ button, input, textarea{
 
 canvas{ background:white; border:1px solid black; cursor:crosshair; }
 
-textarea{ width:100%; height:180px; resize:none; }
+textarea{ width:100%; flex:1; resize:none; }
 
-/* FIXED BROWSER HEIGHT BEHAVIOUR */
+/* Browser fills window properly */
 iframe{
+  flex:1;
   width:100%;
-  height:220px;
-  background:white;
   border:1px solid #000;
+  background:white;
 }
 </style>
 </head>
@@ -159,13 +164,13 @@ iframe{
   </div>
 </div>
 
-<!-- Browser (VERTICAL RESIZE READY) -->
+<!-- Browser with YouTube support -->
 <div id="browser" class="window" style="top:100px;left:300px;">
   <div class="title-bar">Browser <div class="close-btn" onclick="closeWindow('browser')">X</div></div>
   <div class="content">
-    <input id="url" placeholder="example.com">
+    <input id="url" placeholder="youtube.com or site">
     <button onclick="loadPage()">Go</button>
-    <iframe id="pageFrame" sandbox="allow-same-origin allow-scripts allow-forms allow-popups" src="about:blank"></iframe>
+    <iframe id="pageFrame" src="about:blank" allowfullscreen></iframe>
   </div>
 </div>
 
@@ -204,20 +209,36 @@ function closeStart(){
   document.getElementById('startMenu').style.display='none';
 }
 
-// Notepad
 function saveNote(){
   localStorage.setItem('note',document.getElementById('note').value);
 }
 document.getElementById('note').value=localStorage.getItem('note')||"";
 
-// Browser FIXED
+// 🌐 FIXED + YOUTUBE SUPPORT
 function loadPage(){
   let url=document.getElementById('url').value.trim();
   const frame=document.getElementById('pageFrame');
 
   if(!url){
-    frame.srcdoc="<h3>Type a website</h3><p>example.com</p>";
+    frame.srcdoc="<h3>Type a URL</h3>";
     return;
+  }
+
+  // YouTube support
+  if(url.includes("youtube.com/watch") || url.includes("youtu.be")){
+    let videoId="";
+
+    if(url.includes("youtu.be")){
+      videoId=url.split("/").pop();
+    } else {
+      const params=new URLSearchParams(url.split('?')[1]);
+      videoId=params.get("v");
+    }
+
+    if(videoId){
+      frame.src="https://www.youtube.com/embed/"+videoId;
+      return;
+    }
   }
 
   if(!url.startsWith('http')) url='https://'+url;
@@ -243,7 +264,6 @@ canvas.addEventListener('mousemove',e=>{
 
 function clearCanvas(){ctx.clearRect(0,0,canvas.width,canvas.height);}
 
-// Drag
 window.addEventListener('mousedown',e=>{
   const bar=e.target.closest('.title-bar'); if(!bar)return;
   drag=bar.parentElement;
@@ -251,14 +271,15 @@ window.addEventListener('mousedown',e=>{
   oy=e.clientY-drag.offsetTop;
   drag.style.zIndex=++z;
 });
+
 window.addEventListener('mousemove',e=>{
   if(!drag)return;
   drag.style.left=(e.clientX-ox)+'px';
   drag.style.top=(e.clientY-oy)+'px';
 });
+
 window.addEventListener('mouseup',()=>drag=null);
 </script>
 
 </body>
 </html>
-
