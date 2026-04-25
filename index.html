@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Windows 95 Desktop (YouTube + Smart Browser)</title>
+<title>Windows 95</title>
+
+<!-- TAB ICON (FAVICON) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23008080'/%3E%3Ctext x='50' y='60' font-size='60' text-anchor='middle'%3E%F0%9F%96%BC%EF%B8%8F%3C/text%3E%3C/svg%3E">
 
 <style>
 :root{
@@ -117,7 +120,6 @@ canvas{ background:white; border:1px solid black; cursor:crosshair; }
 
 textarea{ width:100%; flex:1; resize:none; }
 
-/* Browser fills window properly */
 iframe{
   flex:1;
   width:100%;
@@ -164,9 +166,9 @@ iframe{
   </div>
 </div>
 
-<!-- Browser with YouTube support -->
+<!-- Browser -->
 <div id="browser" class="window" style="top:100px;left:300px;">
-  <div class="title-bar">Browser <div class="close-btn" onclick="closeWindow('browser')">X</div></div>
+  <div class="title-bar">🌐 Browser <div class="close-btn" onclick="closeWindow('browser')">X</div></div>
   <div class="content">
     <input id="url" placeholder="youtube.com or site">
     <button onclick="loadPage()">Go</button>
@@ -214,7 +216,6 @@ function saveNote(){
 }
 document.getElementById('note').value=localStorage.getItem('note')||"";
 
-// 🌐 FIXED + YOUTUBE SUPPORT
 function loadPage(){
   let url=document.getElementById('url').value.trim();
   const frame=document.getElementById('pageFrame');
@@ -224,7 +225,6 @@ function loadPage(){
     return;
   }
 
-  // YouTube support
   if(url.includes("youtube.com/watch") || url.includes("youtu.be")){
     let videoId="";
 
@@ -245,7 +245,6 @@ function loadPage(){
   frame.src=url;
 }
 
-// Paint
 const canvas=document.getElementById('canvas');
 const ctx=canvas.getContext('2d');
 let draw=false;
