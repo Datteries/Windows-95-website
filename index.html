@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Windows 95 Desktop (Fixed Browser)</title>
+<title>Windows 95 Desktop (Vertical Resize Fix)</title>
 
 <style>
 :root{
@@ -31,17 +31,18 @@ body{
   cursor:pointer;
 }
 
+/* WINDOWS NOW VERTICALLY RESIZABLE (Y AXIS FOCUS) */
 .window{
   position:absolute;
   width:420px;
   min-width:220px;
-  min-height:120px;
+  min-height:140px;
   background:var(--win);
   border:2px solid var(--light);
   box-shadow: inset -2px -2px var(--dark), inset 2px 2px var(--light);
   display:none;
   z-index:10;
-  resize:both;
+  resize: vertical;
   overflow:auto;
 }
 
@@ -111,9 +112,10 @@ canvas{ background:white; border:1px solid black; cursor:crosshair; }
 
 textarea{ width:100%; height:180px; resize:none; }
 
+/* FIXED BROWSER HEIGHT BEHAVIOUR */
 iframe{
   width:100%;
-  height:180px;
+  height:220px;
   background:white;
   border:1px solid #000;
 }
@@ -157,7 +159,7 @@ iframe{
   </div>
 </div>
 
-<!-- Browser FIXED -->
+<!-- Browser (VERTICAL RESIZE READY) -->
 <div id="browser" class="window" style="top:100px;left:300px;">
   <div class="title-bar">Browser <div class="close-btn" onclick="closeWindow('browser')">X</div></div>
   <div class="content">
@@ -208,23 +210,18 @@ function saveNote(){
 }
 document.getElementById('note').value=localStorage.getItem('note')||"";
 
-// FIXED BROWSER
+// Browser FIXED
 function loadPage(){
   let url=document.getElementById('url').value.trim();
   const frame=document.getElementById('pageFrame');
 
   if(!url){
-    frame.srcdoc="<h3>Empty URL</h3><p>Type a website like example.com</p>";
+    frame.srcdoc="<h3>Type a website</h3><p>example.com</p>";
     return;
   }
 
   if(!url.startsWith('http')) url='https://'+url;
-
-  try{
-    frame.src=url;
-  }catch(e){
-    frame.srcdoc="<h3>Failed to load</h3>";
-  }
+  frame.src=url;
 }
 
 // Paint
@@ -262,4 +259,5 @@ window.addEventListener('mousemove',e=>{
 window.addEventListener('mouseup',()=>drag=null);
 </script>
 
-</bo
+</body>
+</html>
