@@ -5,9 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Windows 95</title>
 
-<!-- TAB ICON (FAVICON) -->
-<link rel="icon" type="image/svg+xml" href="icon.png">
-
 <style>
 :root{
   --bg:#008080;
@@ -25,6 +22,7 @@ body{
   user-select:none;
 }
 
+/* Desktop Icons */
 .desktop-icon{
   position:absolute;
   width:80px;
@@ -34,6 +32,7 @@ body{
   cursor:pointer;
 }
 
+/* Windows */
 .window{
   position:absolute;
   width:420px;
@@ -85,40 +84,78 @@ button, input, textarea{
   font-family:inherit;
 }
 
+/* Taskbar */
 .taskbar{
   position:fixed;
   bottom:0;
   width:100%;
   height:32px;
-  background:var(--win);
+  background:#c0c0c0;
+  border-top:2px solid #fff;
+  box-shadow: inset 0 1px #fff;
   display:flex;
   align-items:center;
 }
 
+/* Start Button */
 .start-btn{
+  display:flex;
+  align-items:center;
+  gap:6px;
   margin-left:4px;
-  padding:3px 10px;
+  padding:2px 10px;
   font-weight:bold;
   cursor:pointer;
+  border:2px solid #fff;
+  box-shadow: inset -2px -2px #000, inset 2px 2px #fff;
+  background:#c0c0c0;
 }
 
+.start-btn:active{
+  box-shadow: inset 2px 2px #000, inset -2px -2px #fff;
+}
+
+/* Start Menu */
 .start-menu{
   position:absolute;
   bottom:34px;
   left:4px;
   width:200px;
-  background:var(--win);
-  border:2px solid var(--light);
+  background:#c0c0c0;
+  border:2px solid #fff;
+  box-shadow: inset -2px -2px #000, inset 2px 2px #fff;
   display:none;
   z-index:100;
 }
 
-.start-item{ padding:6px; cursor:pointer; }
-.start-item:hover{ background:var(--title); color:white; }
+.start-header{
+  background:#000080;
+  color:white;
+  padding:6px;
+  font-weight:bold;
+}
 
-canvas{ background:white; border:1px solid black; cursor:crosshair; }
+.start-item{
+  padding:6px;
+  cursor:pointer;
+}
 
-textarea{ width:100%; flex:1; resize:none; }
+.start-item:hover{
+  background:#000080;
+  color:white;
+}
+
+canvas{
+  background:white;
+  border:1px solid black;
+  cursor:crosshair;
+}
+
+textarea{
+  width:100%;
+  flex:1;
+  resize:none;
+}
 
 iframe{
   flex:1;
@@ -128,9 +165,10 @@ iframe{
 }
 </style>
 </head>
+
 <body>
 
-<!-- Icons -->
+<!-- Desktop Icons -->
 <div class="desktop-icon" style="top:20px;left:20px;" onclick="openWindow('computer')">💻<br>Computer</div>
 <div class="desktop-icon" style="top:110px;left:20px;" onclick="openWindow('notepad')">📝<br>Notepad</div>
 <div class="desktop-icon" style="top:200px;left:20px;" onclick="openWindow('paint')">🎨<br>Paint</div>
@@ -159,7 +197,7 @@ iframe{
 <div id="paint" class="window" style="top:160px;left:260px;">
   <div class="title-bar">Paint <div class="close-btn" onclick="closeWindow('paint')">X</div></div>
   <div class="content">
-    <input type="color" id="color" value="#000000">
+    <input type="color" id="color">
     <input type="range" id="size" min="1" max="20" value="3">
     <button onclick="clearCanvas()">Clear</button>
     <canvas id="canvas" width="360" height="220"></canvas>
@@ -172,20 +210,23 @@ iframe{
   <div class="content">
     <input id="url" placeholder="youtube.com or site">
     <button onclick="loadPage()">Go</button>
-    <iframe id="pageFrame" src="about:blank" allowfullscreen></iframe>
+    <iframe id="pageFrame"></iframe>
   </div>
 </div>
 
 <!-- Start Menu -->
 <div id="startMenu" class="start-menu">
-  <div class="start-item" onclick="openWindow('computer')">Computer</div>
-  <div class="start-item" onclick="openWindow('notepad')">Notepad</div>
-  <div class="start-item" onclick="openWindow('paint')">Paint</div>
-  <div class="start-item" onclick="openWindow('browser')">Browser</div>
+  <div class="start-header">Windows 95</div>
+  <div class="start-item" onclick="openWindow('computer')">📁 My Computer</div>
+  <div class="start-item" onclick="openWindow('notepad')">📝 Notepad</div>
+  <div class="start-item" onclick="openWindow('paint')">🎨 Paint</div>
+  <div class="start-item" onclick="openWindow('browser')">🌐 Internet</div>
+  <div class="start-item" onclick="alert('Shutting down...')">⏻ Shut Down</div>
 </div>
 
+<!-- Taskbar -->
 <div class="taskbar">
-  <div class="start-btn" onclick="toggleStart()">Start</div>
+  <div class="start-btn" onclick="toggleStart()">🟩 Start</div>
 </div>
 
 <script>
@@ -211,11 +252,13 @@ function closeStart(){
   document.getElementById('startMenu').style.display='none';
 }
 
+/* Notepad */
 function saveNote(){
   localStorage.setItem('note',document.getElementById('note').value);
 }
 document.getElementById('note').value=localStorage.getItem('note')||"";
 
+/* Browser + YouTube */
 function loadPage(){
   let url=document.getElementById('url').value.trim();
   const frame=document.getElementById('pageFrame');
@@ -226,25 +269,24 @@ function loadPage(){
   }
 
   if(url.includes("youtube.com/watch") || url.includes("youtu.be")){
-    let videoId="";
-
+    let id="";
     if(url.includes("youtu.be")){
-      videoId=url.split("/").pop();
+      id=url.split("/").pop();
     } else {
       const params=new URLSearchParams(url.split('?')[1]);
-      videoId=params.get("v");
+      id=params.get("v");
     }
-
-    if(videoId){
-      frame.src="https://www.youtube.com/embed/"+videoId;
+    if(id){
+      frame.src="https://www.youtube.com/embed/"+id;
       return;
     }
   }
 
-  if(!url.startsWith('http')) url='https://'+url;
+  if(!url.startsWith("http")) url="https://"+url;
   frame.src=url;
 }
 
+/* Paint */
 const canvas=document.getElementById('canvas');
 const ctx=canvas.getContext('2d');
 let draw=false;
@@ -261,10 +303,14 @@ canvas.addEventListener('mousemove',e=>{
   ctx.fill();
 });
 
-function clearCanvas(){ctx.clearRect(0,0,canvas.width,canvas.height);}
+function clearCanvas(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+}
 
+/* Drag windows */
 window.addEventListener('mousedown',e=>{
-  const bar=e.target.closest('.title-bar'); if(!bar)return;
+  const bar=e.target.closest('.title-bar');
+  if(!bar)return;
   drag=bar.parentElement;
   ox=e.clientX-drag.offsetLeft;
   oy=e.clientY-drag.offsetTop;
