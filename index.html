@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Windows 95</title>
-<link rel="icon" type="image/png" href="icon.png">
 
 <style>
 :root{
@@ -114,6 +113,16 @@ button, input, textarea{
 
 .start-btn:active{
   box-shadow: inset 2px 2px #000, inset -2px -2px #fff;
+}
+
+/* Clock */
+.clock{
+  margin-left:auto;
+  margin-right:8px;
+  padding:2px 8px;
+  border:2px solid #fff;
+  box-shadow: inset -2px -2px #000, inset 2px 2px #fff;
+  font-size:13px;
 }
 
 /* Start Menu */
@@ -227,6 +236,8 @@ iframe{
 <!-- Taskbar -->
 <div class="taskbar">
   <div class="start-btn" onclick="toggleStart()"> Start</div>
+
+  <div id="clock" class="clock">12:00 AM</div>
 </div>
 
 <script>
@@ -252,13 +263,28 @@ function closeStart(){
   document.getElementById('startMenu').style.display='none';
 }
 
-/* Notepad */
-function saveNote(){
-  localStorage.setItem('note',document.getElementById('note').value);
+/* Clock */
+function updateClock(){
+  const now = new Date();
+  let h = now.getHours();
+  let m = now.getMinutes();
+
+  const ampm = h >= 12 ? "PM" : "AM";
+  h = h % 12;
+  if(h === 0) h = 12;
+
+  if(m < 10) m = "0" + m;
+
+  document.getElementById("clock").textContent = h + ":" + m + " " + ampm;
 }
+
+setInterval(updateClock, 1000);
+updateClock();
+
+/* Notepad */
 document.getElementById('note').value=localStorage.getItem('note')||"";
 
-/* Browser + YouTube */
+/* Browser */
 function loadPage(){
   let url=document.getElementById('url').value.trim();
   const frame=document.getElementById('pageFrame');
