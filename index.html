@@ -25,7 +25,6 @@ body{
   background:var(--bg);
   overflow:hidden;
   user-select:none;
-  -webkit-font-smoothing:none;
 }
 
 /* ICONS */
@@ -74,7 +73,6 @@ body{
   box-shadow: inset -2px -2px var(--dark), inset 2px 2px var(--light);
   text-align:center;
   cursor:pointer;
-  font-size:12px;
 }
 
 /* CONTENT */
@@ -109,7 +107,6 @@ button, input, textarea{
   font-weight:bold;
   cursor:pointer;
   border:2px solid #fff;
-  box-shadow: inset -2px -2px #000, inset 2px 2px #fff;
 }
 
 #taskbar-windows{display:flex;gap:4px;margin-left:8px;}
@@ -117,9 +114,7 @@ button, input, textarea{
 .task-btn{
   padding:2px 8px;
   border:2px solid #fff;
-  box-shadow: inset -2px -2px #000, inset 2px 2px #fff;
   cursor:pointer;
-  background:#c0c0c0;
   max-width:120px;
   overflow:hidden;
   white-space:nowrap;
@@ -130,7 +125,6 @@ button, input, textarea{
   margin-right:8px;
   padding:2px 8px;
   border:2px solid #fff;
-  box-shadow: inset -2px -2px #000, inset 2px 2px #fff;
 }
 
 /* START MENU */
@@ -141,19 +135,15 @@ button, input, textarea{
   width:200px;
   background:#c0c0c0;
   border:2px solid #fff;
-  box-shadow: inset -2px -2px #000, inset 2px 2px #fff;
   display:none;
 }
 
-.start-header{background:#000080;color:white;padding:6px;font-weight:bold;}
-
+.start-header{background:#000080;color:white;padding:6px;}
 .start-item{padding:6px;cursor:pointer;}
 .start-item:hover{background:#000080;color:white;}
 
 /* browser */
 iframe{flex:1;width:100%;border:1px solid #000;}
-textarea{flex:1;width:100%;resize:none;}
-canvas{background:white;border:1px solid black;}
 </style>
 </head>
 
@@ -167,11 +157,8 @@ canvas{background:white;border:1px solid black;}
 
 <!-- COMPUTER -->
 <div id="computer" class="window" style="top:80px;left:150px;">
-  <div class="title-bar">
-    Computer
+  <div class="title-bar">Computer
     <div class="title-buttons">
-      <div class="close-btn" onclick="minimizeWindow('computer')">-</div>
-      <div class="close-btn" onclick="toggleFullscreen('computer')">☐</div>
       <div class="close-btn" onclick="closeWindow('computer')">X</div>
     </div>
   </div>
@@ -183,64 +170,51 @@ canvas{background:white;border:1px solid black;}
 
 <!-- NOTEPAD -->
 <div id="notepad" class="window" style="top:120px;left:220px;">
-  <div class="title-bar">
-    Notepad
+  <div class="title-bar">Notepad
     <div class="title-buttons">
-      <div class="close-btn" onclick="minimizeWindow('notepad')">-</div>
-      <div class="close-btn" onclick="toggleFullscreen('notepad')">☐</div>
       <div class="close-btn" onclick="closeWindow('notepad')">X</div>
     </div>
   </div>
   <div class="content">
-    <textarea></textarea>
+    <textarea style="flex:1;"></textarea>
   </div>
 </div>
 
 <!-- PAINT -->
 <div id="paint" class="window" style="top:160px;left:260px;">
-  <div class="title-bar">
-    Paint
+  <div class="title-bar">Paint
     <div class="title-buttons">
-      <div class="close-btn" onclick="minimizeWindow('paint')">-</div>
-      <div class="close-btn" onclick="toggleFullscreen('paint')">☐</div>
       <div class="close-btn" onclick="closeWindow('paint')">X</div>
     </div>
   </div>
   <div class="content">
-    <input type="color" id="color">
-    <input type="range" id="size" min="1" max="20" value="3">
-    <canvas id="canvas" width="360" height="220"></canvas>
+    <input type="color">
+    <input type="range" min="1" max="20">
+    <canvas width="360" height="220"></canvas>
   </div>
 </div>
 
 <!-- BROWSER -->
 <div id="browser" class="window" style="top:100px;left:300px;">
-  <div class="title-bar">
-    Internet Explorer
+  <div class="title-bar">Internet Explorer
     <div class="title-buttons">
-      <div class="close-btn" onclick="minimizeWindow('browser')">-</div>
-      <div class="close-btn" onclick="toggleFullscreen('browser')">☐</div>
       <div class="close-btn" onclick="closeWindow('browser')">X</div>
     </div>
   </div>
 
   <div class="content">
-
     <div style="display:flex;gap:4px;">
       <button onclick="goBack()">◀</button>
       <button onclick="goForward()">▶</button>
-      <input id="url" style="flex:1;" placeholder="google / youtube / site">
+      <input id="url" style="flex:1;" placeholder="youtube / google / github / site">
       <button onclick="loadPage()">Go</button>
     </div>
 
     <div id="status">Ready</div>
 
-    <div id="loadBar" style="height:8px;background:#fff;border:1px solid #000;"></div>
+    <div id="loadBar" style="height:6px;background:white;border:1px solid black;width:0%;"></div>
 
-    <div id="browserView" style="flex:1;background:white;border:1px solid #000;padding:6px;overflow:auto;">
-      <h3>Windows 95 Internet</h3>
-    </div>
-
+    <iframe id="browserView"></iframe>
   </div>
 </div>
 
@@ -257,60 +231,28 @@ canvas{background:white;border:1px solid black;}
 <div class="taskbar">
   <div class="start-btn" onclick="toggleStart()">Start</div>
   <div id="taskbar-windows"></div>
-  <div id="clock" class="clock">12:00 AM</div>
+  <div class="clock" id="clock">12:00 AM</div>
 </div>
 
 <script>
 let z=10;
-let openApps={};
 let history=[],index=-1;
 
-/* WINDOWS */
+/* WINDOW SYSTEM */
 function openWindow(id){
   const w=document.getElementById(id);
-  w.style.display='block';
+  w.style.display="block";
   w.style.zIndex=++z;
-
-  if(!openApps[id]){
-    const b=document.createElement("div");
-    b.className="task-btn";
-    b.innerText=id;
-    b.onclick=()=>w.style.display=(w.style.display==="none"?"block":"none");
-    document.getElementById("taskbar-windows").appendChild(b);
-    openApps[id]=true;
-  }
-
-  closeStart();
 }
 
 function closeWindow(id){
-  document.getElementById(id).style.display='none';
+  document.getElementById(id).style.display="none";
 }
 
-function minimizeWindow(id){
-  document.getElementById(id).style.display='none';
-}
-
-function toggleFullscreen(id){
-  const w=document.getElementById(id);
-  if(!w.dataset.f){
-    w.dataset.f=1;
-    w.dataset.l=w.style.left;
-    w.dataset.t=w.style.top;
-    w.dataset.w=w.style.width;
-    w.dataset.h=w.style.height;
-
-    w.style.left="0";
-    w.style.top="0";
-    w.style.width="100vw";
-    w.style.height="calc(100vh - 32px)";
-  }else{
-    w.dataset.f="";
-    w.style.left=w.dataset.l;
-    w.style.top=w.dataset.t;
-    w.style.width=w.dataset.w;
-    w.style.height=w.dataset.h;
-  }
+/* START */
+function toggleStart(){
+  const m=document.getElementById("startMenu");
+  m.style.display=m.style.display==="block"?"none":"block";
 }
 
 /* CLOCK */
@@ -323,45 +265,67 @@ setInterval(()=>{
   document.getElementById("clock").textContent=h+":"+m+" "+a;
 },1000);
 
-/* START */
-function toggleStart(){
-  const m=document.getElementById("startMenu");
-  m.style.display=m.style.display==="block"?"none":"block";
-}
-function closeStart(){
-  document.getElementById("startMenu").style.display="none";
+/* SMART BROWSER */
+function smartURL(input){
+  input=input.trim();
+
+  if(input.includes("youtube")){
+    let id=input.split("v=")[1];
+    if(id){
+      return "https://www.youtube.com/embed/"+id;
+    }
+    return "https://www.youtube.com/results?search_query="+encodeURIComponent(input);
+  }
+
+  if(input.includes("google")){
+    return "https://www.google.com/search?q="+encodeURIComponent(input);
+  }
+
+  if(input.includes("github")){
+    return "https://github.com/search?q="+encodeURIComponent(input);
+  }
+
+  if(!input.startsWith("http")){
+    return "https://"+input;
+  }
+
+  return input;
 }
 
-/* BROWSER (SIMPLE SAFE VERSION) */
 function loadPage(){
-  const url=document.getElementById("url").value;
-  const v=document.getElementById("browserView");
+  const frame=document.getElementById("browserView");
+  const url=smartURL(document.getElementById("url").value);
 
-  if(url.includes("youtube.com")){
-    v.innerHTML="YouTube detected (simulated load)";
-  }else if(url==="google"){
-    v.innerHTML="<h3>Google 1998</h3><input><button>Search</button>";
-  }else{
-    v.innerHTML="<h3>Blocked Page</h3><p>"+url+"</p>";
+  let bar=document.getElementById("loadBar");
+  bar.style.width="0%";
+
+  let p=0;
+  let int=setInterval(()=>{
+    p+=10;
+    bar.style.width=p+"%";
+    if(p>=100) clearInterval(int);
+  },40);
+
+  frame.src=url;
+
+  history=history.slice(0,index+1);
+  history.push(url);
+  index++;
+}
+
+function goBack(){
+  if(index>0){
+    index--;
+    document.getElementById("browserView").src=history[index];
   }
 }
 
-/* DRAG */
-let drag=null,ox=0,oy=0;
-window.onmousedown=e=>{
-  const t=e.target.closest(".title-bar");
-  if(!t)return;
-  drag=t.parentElement;
-  ox=e.clientX-drag.offsetLeft;
-  oy=e.clientY-drag.offsetTop;
-  drag.style.zIndex=++z;
-};
-window.onmousemove=e=>{
-  if(!drag)return;
-  drag.style.left=(e.clientX-ox)+"px";
-  drag.style.top=(e.clientY-oy)+"px";
-};
-window.onmouseup=()=>drag=null;
+function goForward(){
+  if(index<history.length-1){
+    index++;
+    document.getElementById("browserView").src=history[index];
+  }
+}
 </script>
 
 </body>
