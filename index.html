@@ -15,12 +15,19 @@
   --title:#000080;
 }
 
+/* 🧠 GLOBAL WIN95 FONT FIX */
+body, button, input, textarea, .task-btn, .start-menu, .start-item, .start-header, .title-bar{
+  font-family:"MS Sans Serif", Tahoma, sans-serif;
+  font-size:13px;
+}
+
+/* 🪟 CRISP RETRO LOOK */
 body{
   margin:0;
   background:var(--bg);
-  font-family:"MS Sans Serif", Tahoma, sans-serif;
   overflow:hidden;
   user-select:none;
+  -webkit-font-smoothing:none;
 }
 
 /* Desktop Icons */
@@ -53,13 +60,13 @@ body{
   background:var(--title);
   color:white;
   padding:3px;
-  font-size:13px;
   display:flex;
   justify-content:space-between;
   align-items:center;
   cursor:grab;
 }
 
+/* Title Buttons */
 .title-buttons{
   display:flex;
   gap:4px;
@@ -81,7 +88,6 @@ body{
 /* Content */
 .content{
   padding:10px;
-  font-size:13px;
   height:calc(100% - 26px);
   display:flex;
   flex-direction:column;
@@ -91,7 +97,6 @@ button, input, textarea{
   background:var(--win);
   border:2px solid var(--light);
   box-shadow: inset -2px -2px var(--dark), inset 2px 2px var(--light);
-  font-family:inherit;
 }
 
 /* Taskbar */
@@ -127,7 +132,6 @@ button, input, textarea{
   padding:2px 8px;
   border:2px solid #fff;
   box-shadow: inset -2px -2px #000, inset 2px 2px #fff;
-  font-size:12px;
   cursor:pointer;
   background:#c0c0c0;
   max-width:120px;
@@ -142,7 +146,6 @@ button, input, textarea{
   padding:2px 8px;
   border:2px solid #fff;
   box-shadow: inset -2px -2px #000, inset 2px 2px #fff;
-  font-size:13px;
 }
 
 /* Start menu */
@@ -182,13 +185,13 @@ iframe{flex:1;width:100%;border:1px solid #000;}
 
 <body>
 
-<!-- Icons -->
+<!-- Desktop Icons -->
 <div class="desktop-icon" style="top:20px;left:20px;" onclick="openWindow('computer')">💻<br>Computer</div>
 <div class="desktop-icon" style="top:110px;left:20px;" onclick="openWindow('notepad')">📝<br>Notepad</div>
 <div class="desktop-icon" style="top:200px;left:20px;" onclick="openWindow('paint')">🎨<br>Paint</div>
 <div class="desktop-icon" style="top:290px;left:20px;" onclick="openWindow('browser')">🌐<br>Browser</div>
 
-<!-- Computer -->
+<!-- COMPUTER -->
 <div id="computer" class="window" style="top:80px;left:150px;">
   <div class="title-bar">
     My Computer
@@ -205,7 +208,7 @@ iframe{flex:1;width:100%;border:1px solid #000;}
   </div>
 </div>
 
-<!-- Notepad -->
+<!-- NOTEPAD -->
 <div id="notepad" class="window" style="top:120px;left:220px;">
   <div class="title-bar">
     Notepad
@@ -220,7 +223,7 @@ iframe{flex:1;width:100%;border:1px solid #000;}
   </div>
 </div>
 
-<!-- Paint -->
+<!-- PAINT -->
 <div id="paint" class="window" style="top:160px;left:260px;">
   <div class="title-bar">
     Paint
@@ -237,7 +240,7 @@ iframe{flex:1;width:100%;border:1px solid #000;}
   </div>
 </div>
 
-<!-- Browser -->
+<!-- BROWSER -->
 <div id="browser" class="window" style="top:100px;left:300px;">
   <div class="title-bar">
     Browser
@@ -254,7 +257,7 @@ iframe{flex:1;width:100%;border:1px solid #000;}
   </div>
 </div>
 
-<!-- Start Menu -->
+<!-- START MENU -->
 <div id="startMenu" class="start-menu">
   <div class="start-header">Windows 95</div>
   <div class="start-item" onclick="openWindow('computer')">My Computer</div>
@@ -263,7 +266,7 @@ iframe{flex:1;width:100%;border:1px solid #000;}
   <div class="start-item" onclick="openWindow('browser')">Internet</div>
 </div>
 
-<!-- Taskbar -->
+<!-- TASKBAR -->
 <div class="taskbar">
   <div class="start-btn" onclick="toggleStart()">Start</div>
 
@@ -276,6 +279,7 @@ iframe{flex:1;width:100%;border:1px solid #000;}
 let z=10;
 let openApps={};
 
+/* WINDOW SYSTEM */
 function openWindow(id){
   const w=document.getElementById(id);
   w.style.display='block';
@@ -304,8 +308,8 @@ function toggleFullscreen(id){
   const w=document.getElementById(id);
 
   if(!w.dataset.full){
-    w.dataset.left=w.style.left;
-    w.dataset.top=w.style.top;
+    w.dataset.l=w.style.left;
+    w.dataset.t=w.style.top;
     w.dataset.w=w.style.width;
     w.dataset.h=w.style.height;
 
@@ -315,23 +319,24 @@ function toggleFullscreen(id){
     w.style.height="calc(100vh - 32px)";
     w.dataset.full=1;
   } else {
-    w.style.left=w.dataset.left;
-    w.style.top=w.dataset.top;
+    w.style.left=w.dataset.l;
+    w.style.top=w.dataset.t;
     w.style.width=w.dataset.w;
     w.style.height=w.dataset.h;
     w.dataset.full="";
   }
 }
 
+/* TASKBAR */
 function createTaskButton(id){
-  const container=document.getElementById("taskbar-windows");
+  const c=document.getElementById("taskbar-windows");
 
-  const btn=document.createElement("div");
-  btn.className="task-btn";
-  btn.id="btn-"+id;
-  btn.innerText=id;
+  const b=document.createElement("div");
+  b.className="task-btn";
+  b.id="btn-"+id;
+  b.innerText=id;
 
-  btn.onclick=()=>{
+  b.onclick=()=>{
     const w=document.getElementById(id);
     if(w.style.display==="none"){
       w.style.display="block";
@@ -341,10 +346,10 @@ function createTaskButton(id){
     }
   };
 
-  container.appendChild(btn);
+  c.appendChild(b);
 }
 
-/* Clock */
+/* CLOCK */
 function updateClock(){
   const d=new Date();
   let h=d.getHours();
@@ -357,7 +362,7 @@ function updateClock(){
 setInterval(updateClock,1000);
 updateClock();
 
-/* Start */
+/* START */
 function toggleStart(){
   const m=document.getElementById("startMenu");
   m.style.display=m.style.display==="block"?"none":"block";
@@ -366,7 +371,7 @@ function closeStart(){
   document.getElementById("startMenu").style.display="none";
 }
 
-/* Drag */
+/* DRAG */
 let drag=null,ox=0,oy=0;
 window.addEventListener('mousedown',e=>{
   const bar=e.target.closest('.title-bar');
