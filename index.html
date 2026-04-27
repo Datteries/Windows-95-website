@@ -33,7 +33,7 @@ body{
   cursor:pointer;
 }
 
-/* Windows */
+/* Window */
 .window{
   position:absolute;
   width:420px;
@@ -48,6 +48,7 @@ body{
   overflow:hidden;
 }
 
+/* Title Bar */
 .title-bar{
   background:var(--title);
   color:white;
@@ -55,7 +56,13 @@ body{
   font-size:13px;
   display:flex;
   justify-content:space-between;
+  align-items:center;
   cursor:grab;
+}
+
+.title-buttons{
+  display:flex;
+  gap:4px;
 }
 
 .close-btn{
@@ -68,8 +75,10 @@ body{
   line-height:14px;
   cursor:pointer;
   font-weight:bold;
+  font-size:12px;
 }
 
+/* Content */
 .content{
   padding:10px;
   font-size:13px;
@@ -93,27 +102,37 @@ button, input, textarea{
   height:32px;
   background:#c0c0c0;
   border-top:2px solid #fff;
-  box-shadow: inset 0 1px #fff;
   display:flex;
   align-items:center;
 }
 
-/* Start Button */
+/* Start */
 .start-btn{
-  display:flex;
-  align-items:center;
-  gap:6px;
   margin-left:4px;
   padding:2px 10px;
   font-weight:bold;
   cursor:pointer;
   border:2px solid #fff;
   box-shadow: inset -2px -2px #000, inset 2px 2px #fff;
-  background:#c0c0c0;
 }
 
-.start-btn:active{
-  box-shadow: inset 2px 2px #000, inset -2px -2px #fff;
+/* Task buttons */
+#taskbar-windows{
+  display:flex;
+  gap:4px;
+  margin-left:8px;
+}
+
+.task-btn{
+  padding:2px 8px;
+  border:2px solid #fff;
+  box-shadow: inset -2px -2px #000, inset 2px 2px #fff;
+  font-size:12px;
+  cursor:pointer;
+  background:#c0c0c0;
+  max-width:120px;
+  overflow:hidden;
+  white-space:nowrap;
 }
 
 /* Clock */
@@ -126,7 +145,7 @@ button, input, textarea{
   font-size:13px;
 }
 
-/* Start Menu */
+/* Start menu */
 .start-menu{
   position:absolute;
   bottom:34px;
@@ -136,7 +155,6 @@ button, input, textarea{
   border:2px solid #fff;
   box-shadow: inset -2px -2px #000, inset 2px 2px #fff;
   display:none;
-  z-index:100;
 }
 
 .start-header{
@@ -156,30 +174,15 @@ button, input, textarea{
   color:white;
 }
 
-canvas{
-  background:white;
-  border:1px solid black;
-  cursor:crosshair;
-}
-
-textarea{
-  width:100%;
-  flex:1;
-  resize:none;
-}
-
-iframe{
-  flex:1;
-  width:100%;
-  border:1px solid #000;
-  background:white;
-}
+canvas{background:white;border:1px solid black;}
+textarea{flex:1;width:100%;resize:none;}
+iframe{flex:1;width:100%;border:1px solid #000;}
 </style>
 </head>
 
 <body>
 
-<!-- Desktop Icons -->
+<!-- Icons -->
 <div class="desktop-icon" style="top:20px;left:20px;" onclick="openWindow('computer')">💻<br>Computer</div>
 <div class="desktop-icon" style="top:110px;left:20px;" onclick="openWindow('notepad')">📝<br>Notepad</div>
 <div class="desktop-icon" style="top:200px;left:20px;" onclick="openWindow('paint')">🎨<br>Paint</div>
@@ -187,7 +190,14 @@ iframe{
 
 <!-- Computer -->
 <div id="computer" class="window" style="top:80px;left:150px;">
-  <div class="title-bar">My Computer <div class="close-btn" onclick="closeWindow('computer')">X</div></div>
+  <div class="title-bar">
+    My Computer
+    <div class="title-buttons">
+      <div class="close-btn" onclick="minimizeWindow('computer')">_</div>
+      <div class="close-btn" onclick="toggleFullscreen('computer')">⬜</div>
+      <div class="close-btn" onclick="closeWindow('computer')">X</div>
+    </div>
+  </div>
   <div class="content">
     <p>C:\ Drive</p>
     <p>A:\ Floppy</p>
@@ -197,28 +207,48 @@ iframe{
 
 <!-- Notepad -->
 <div id="notepad" class="window" style="top:120px;left:220px;">
-  <div class="title-bar">Notepad <div class="close-btn" onclick="closeWindow('notepad')">X</div></div>
+  <div class="title-bar">
+    Notepad
+    <div class="title-buttons">
+      <div class="close-btn" onclick="minimizeWindow('notepad')">_</div>
+      <div class="close-btn" onclick="toggleFullscreen('notepad')">⬜</div>
+      <div class="close-btn" onclick="closeWindow('notepad')">X</div>
+    </div>
+  </div>
   <div class="content">
-    <textarea id="note"></textarea>
+    <textarea></textarea>
   </div>
 </div>
 
 <!-- Paint -->
 <div id="paint" class="window" style="top:160px;left:260px;">
-  <div class="title-bar">Paint <div class="close-btn" onclick="closeWindow('paint')">X</div></div>
+  <div class="title-bar">
+    Paint
+    <div class="title-buttons">
+      <div class="close-btn" onclick="minimizeWindow('paint')">_</div>
+      <div class="close-btn" onclick="toggleFullscreen('paint')">⬜</div>
+      <div class="close-btn" onclick="closeWindow('paint')">X</div>
+    </div>
+  </div>
   <div class="content">
     <input type="color" id="color">
     <input type="range" id="size" min="1" max="20" value="3">
-    <button onclick="clearCanvas()">Clear</button>
     <canvas id="canvas" width="360" height="220"></canvas>
   </div>
 </div>
 
 <!-- Browser -->
 <div id="browser" class="window" style="top:100px;left:300px;">
-  <div class="title-bar">🌐 Browser <div class="close-btn" onclick="closeWindow('browser')">X</div></div>
+  <div class="title-bar">
+    Browser
+    <div class="title-buttons">
+      <div class="close-btn" onclick="minimizeWindow('browser')">_</div>
+      <div class="close-btn" onclick="toggleFullscreen('browser')">⬜</div>
+      <div class="close-btn" onclick="closeWindow('browser')">X</div>
+    </div>
+  </div>
   <div class="content">
-    <input id="url" placeholder="youtube.com or site">
+    <input id="url" placeholder="site">
     <button onclick="loadPage()">Go</button>
     <iframe id="pageFrame"></iframe>
   </div>
@@ -227,114 +257,117 @@ iframe{
 <!-- Start Menu -->
 <div id="startMenu" class="start-menu">
   <div class="start-header">Windows 95</div>
-  <div class="start-item" onclick="openWindow('computer')">📁 My Computer</div>
-  <div class="start-item" onclick="openWindow('notepad')">📝 Notepad</div>
-  <div class="start-item" onclick="openWindow('paint')">🎨 Paint</div>
-  <div class="start-item" onclick="openWindow('browser')">🌐 Internet</div>
-  <div class="start-item" onclick="alert('Shutting down...')">⏻ Shut Down</div>
+  <div class="start-item" onclick="openWindow('computer')">My Computer</div>
+  <div class="start-item" onclick="openWindow('notepad')">Notepad</div>
+  <div class="start-item" onclick="openWindow('paint')">Paint</div>
+  <div class="start-item" onclick="openWindow('browser')">Internet</div>
 </div>
 
 <!-- Taskbar -->
 <div class="taskbar">
-  <div class="start-btn" onclick="toggleStart()"> Start</div>
+  <div class="start-btn" onclick="toggleStart()">Start</div>
+
+  <div id="taskbar-windows"></div>
 
   <div id="clock" class="clock">12:00 AM</div>
 </div>
 
 <script>
-let drag=null,ox=0,oy=0,z=10;
+let z=10;
+let openApps={};
 
 function openWindow(id){
   const w=document.getElementById(id);
   w.style.display='block';
   w.style.zIndex=++z;
+
+  if(!openApps[id]){
+    createTaskButton(id);
+    openApps[id]=true;
+  }
+
   closeStart();
 }
 
 function closeWindow(id){
   document.getElementById(id).style.display='none';
+  const btn=document.getElementById("btn-"+id);
+  if(btn) btn.remove();
+  delete openApps[id];
 }
 
-function toggleStart(){
-  const m=document.getElementById('startMenu');
-  m.style.display=(m.style.display==='block')?'none':'block';
+function minimizeWindow(id){
+  document.getElementById(id).style.display='none';
 }
 
-function closeStart(){
-  document.getElementById('startMenu').style.display='none';
+function toggleFullscreen(id){
+  const w=document.getElementById(id);
+
+  if(!w.dataset.full){
+    w.dataset.left=w.style.left;
+    w.dataset.top=w.style.top;
+    w.dataset.w=w.style.width;
+    w.dataset.h=w.style.height;
+
+    w.style.left="0";
+    w.style.top="0";
+    w.style.width="100vw";
+    w.style.height="calc(100vh - 32px)";
+    w.dataset.full=1;
+  } else {
+    w.style.left=w.dataset.left;
+    w.style.top=w.dataset.top;
+    w.style.width=w.dataset.w;
+    w.style.height=w.dataset.h;
+    w.dataset.full="";
+  }
+}
+
+function createTaskButton(id){
+  const container=document.getElementById("taskbar-windows");
+
+  const btn=document.createElement("div");
+  btn.className="task-btn";
+  btn.id="btn-"+id;
+  btn.innerText=id;
+
+  btn.onclick=()=>{
+    const w=document.getElementById(id);
+    if(w.style.display==="none"){
+      w.style.display="block";
+      w.style.zIndex=++z;
+    } else {
+      w.style.display="none";
+    }
+  };
+
+  container.appendChild(btn);
 }
 
 /* Clock */
 function updateClock(){
-  const now = new Date();
-  let h = now.getHours();
-  let m = now.getMinutes();
-
-  const ampm = h >= 12 ? "PM" : "AM";
-  h = h % 12;
-  if(h === 0) h = 12;
-
-  if(m < 10) m = "0" + m;
-
-  document.getElementById("clock").textContent = h + ":" + m + " " + ampm;
+  const d=new Date();
+  let h=d.getHours();
+  let m=d.getMinutes();
+  const am=h>=12?"PM":"AM";
+  h=h%12||12;
+  if(m<10)m="0"+m;
+  document.getElementById("clock").textContent=h+":"+m+" "+am;
 }
-
-setInterval(updateClock, 1000);
+setInterval(updateClock,1000);
 updateClock();
 
-/* Notepad */
-document.getElementById('note').value=localStorage.getItem('note')||"";
-
-/* Browser */
-function loadPage(){
-  let url=document.getElementById('url').value.trim();
-  const frame=document.getElementById('pageFrame');
-
-  if(!url){
-    frame.srcdoc="<h3>Type a URL</h3>";
-    return;
-  }
-
-  if(url.includes("youtube.com/watch") || url.includes("youtu.be")){
-    let id="";
-    if(url.includes("youtu.be")){
-      id=url.split("/").pop();
-    } else {
-      const params=new URLSearchParams(url.split('?')[1]);
-      id=params.get("v");
-    }
-    if(id){
-      frame.src="https://www.youtube.com/embed/"+id;
-      return;
-    }
-  }
-
-  if(!url.startsWith("http")) url="https://"+url;
-  frame.src=url;
+/* Start */
+function toggleStart(){
+  const m=document.getElementById("startMenu");
+  m.style.display=m.style.display==="block"?"none":"block";
+}
+function closeStart(){
+  document.getElementById("startMenu").style.display="none";
 }
 
-/* Paint */
-const canvas=document.getElementById('canvas');
-const ctx=canvas.getContext('2d');
-let draw=false;
-
-canvas.addEventListener('mousedown',()=>draw=true);
-canvas.addEventListener('mouseup',()=>draw=false);
-canvas.addEventListener('mousemove',e=>{
-  if(!draw)return;
-  const r=canvas.getBoundingClientRect();
-  ctx.fillStyle=document.getElementById('color').value;
-  const s=document.getElementById('size').value;
-  ctx.beginPath();
-  ctx.arc(e.clientX-r.left,e.clientY-r.top,s,0,Math.PI*2);
-  ctx.fill();
-});
-
-function clearCanvas(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-}
-
-/* Drag windows */
+/* Drag */
+let drag=null,ox=0,oy=0;
 window.addEventListener('mousedown',e=>{
   const bar=e.target.closest('.title-bar');
   if(!bar)return;
@@ -343,13 +376,11 @@ window.addEventListener('mousedown',e=>{
   oy=e.clientY-drag.offsetTop;
   drag.style.zIndex=++z;
 });
-
 window.addEventListener('mousemove',e=>{
   if(!drag)return;
   drag.style.left=(e.clientX-ox)+'px';
   drag.style.top=(e.clientY-oy)+'px';
 });
-
 window.addEventListener('mouseup',()=>drag=null);
 </script>
 
