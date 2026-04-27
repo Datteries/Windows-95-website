@@ -15,25 +15,21 @@
   --title:#000080;
 }
 
-body, button, input, textarea, .task-btn, .start-menu, .start-item, .start-header, .title-bar{
-  font-family:"MS Sans Serif", Tahoma, sans-serif;
-  font-size:13px;
-}
-
 body{
   margin:0;
   background:var(--bg);
   overflow:hidden;
   user-select:none;
+  font-family:"MS Sans Serif", Tahoma, sans-serif;
+  font-size:13px;
 }
 
 /* ICONS */
 .desktop-icon{
   position:absolute;
-  width:115px;
+  width:120px;
   text-align:center;
   color:white;
-  font-size:17px;
   cursor:pointer;
 }
 
@@ -41,13 +37,11 @@ body{
 .window{
   position:absolute;
   width:420px;
-  min-width:220px;
-  min-height:140px;
+  min-height:150px;
   background:var(--win);
   border:2px solid var(--light);
   box-shadow: inset -2px -2px var(--dark), inset 2px 2px var(--light);
   display:none;
-  z-index:10;
   resize:both;
   overflow:hidden;
 }
@@ -63,30 +57,27 @@ body{
   cursor:grab;
 }
 
-.title-buttons{display:flex;gap:4px;}
-
 .close-btn{
   width:18px;
   height:18px;
   background:var(--win);
-  border:1px solid var(--light);
-  box-shadow: inset -2px -2px var(--dark), inset 2px 2px var(--light);
-  text-align:center;
+  border:1px solid #fff;
   cursor:pointer;
+  text-align:center;
 }
 
 /* CONTENT */
 .content{
   padding:10px;
-  height:calc(100% - 26px);
   display:flex;
   flex-direction:column;
+  height:calc(100% - 26px);
 }
 
-button, input, textarea{
+button,input{
   background:var(--win);
-  border:2px solid var(--light);
-  box-shadow: inset -2px -2px var(--dark), inset 2px 2px var(--light);
+  border:2px solid #fff;
+  box-shadow: inset -2px -2px #000, inset 2px 2px #fff;
 }
 
 /* TASKBAR */
@@ -109,20 +100,9 @@ button, input, textarea{
   border:2px solid #fff;
 }
 
-#taskbar-windows{display:flex;gap:4px;margin-left:8px;}
-
-.task-btn{
-  padding:2px 8px;
-  border:2px solid #fff;
-  cursor:pointer;
-  max-width:120px;
-  overflow:hidden;
-  white-space:nowrap;
-}
-
 .clock{
   margin-left:auto;
-  margin-right:8px;
+  margin-right:10px;
   padding:2px 8px;
   border:2px solid #fff;
 }
@@ -138,12 +118,21 @@ button, input, textarea{
   display:none;
 }
 
-.start-header{background:#000080;color:white;padding:6px;}
-.start-item{padding:6px;cursor:pointer;}
-.start-item:hover{background:#000080;color:white;}
+.start-header{
+  background:#000080;
+  color:white;
+  padding:5px;
+}
 
-/* browser */
-iframe{flex:1;width:100%;border:1px solid #000;}
+.start-item{
+  padding:6px;
+  cursor:pointer;
+}
+
+.start-item:hover{
+  background:#000080;
+  color:white;
+}
 </style>
 </head>
 
@@ -152,15 +141,12 @@ iframe{flex:1;width:100%;border:1px solid #000;}
 <!-- DESKTOP -->
 <div class="desktop-icon" style="top:20px;left:20px;" onclick="openWindow('computer')">💻<br>Computer</div>
 <div class="desktop-icon" style="top:110px;left:20px;" onclick="openWindow('notepad')">📝<br>Notepad</div>
-<div class="desktop-icon" style="top:200px;left:20px;" onclick="openWindow('paint')">🎨<br>Paint</div>
-<div class="desktop-icon" style="top:290px;left:20px;" onclick="openWindow('browser')">🌐<br>Browser</div>
+<div class="desktop-icon" style="top:200px;left:20px;" onclick="openWindow('browser')">🌐<br>Browser</div>
 
 <!-- COMPUTER -->
 <div id="computer" class="window" style="top:80px;left:150px;">
   <div class="title-bar">Computer
-    <div class="title-buttons">
-      <div class="close-btn" onclick="closeWindow('computer')">X</div>
-    </div>
+    <div class="close-btn" onclick="closeWindow('computer')">X</div>
   </div>
   <div class="content">
     <p>C:\ Drive</p>
@@ -171,50 +157,36 @@ iframe{flex:1;width:100%;border:1px solid #000;}
 <!-- NOTEPAD -->
 <div id="notepad" class="window" style="top:120px;left:220px;">
   <div class="title-bar">Notepad
-    <div class="title-buttons">
-      <div class="close-btn" onclick="closeWindow('notepad')">X</div>
-    </div>
+    <div class="close-btn" onclick="closeWindow('notepad')">X</div>
   </div>
   <div class="content">
-    <textarea style="flex:1;"></textarea>
-  </div>
-</div>
-
-<!-- PAINT -->
-<div id="paint" class="window" style="top:160px;left:260px;">
-  <div class="title-bar">Paint
-    <div class="title-buttons">
-      <div class="close-btn" onclick="closeWindow('paint')">X</div>
-    </div>
-  </div>
-  <div class="content">
-    <input type="color">
-    <input type="range" min="1" max="20">
-    <canvas width="360" height="220"></canvas>
+    <textarea style="flex:1"></textarea>
   </div>
 </div>
 
 <!-- BROWSER -->
 <div id="browser" class="window" style="top:100px;left:300px;">
   <div class="title-bar">Internet Explorer
-    <div class="title-buttons">
-      <div class="close-btn" onclick="closeWindow('browser')">X</div>
-    </div>
+    <div class="close-btn" onclick="closeWindow('browser')">X</div>
   </div>
 
   <div class="content">
+
     <div style="display:flex;gap:4px;">
-      <button onclick="goBack()">◀</button>
-      <button onclick="goForward()">▶</button>
-      <input id="url" style="flex:1;" placeholder="youtube / google / github / site">
+      <input id="url" style="flex:1" placeholder="youtube / google / github / site">
       <button onclick="loadPage()">Go</button>
     </div>
 
     <div id="status">Ready</div>
 
-    <div id="loadBar" style="height:6px;background:white;border:1px solid black;width:0%;"></div>
+    <div id="loadBar" style="height:6px;background:white;width:0%"></div>
 
-    <iframe id="browserView"></iframe>
+    <div style="margin-top:8px;">
+      <button onclick="quick('google')">Google</button>
+      <button onclick="quick('youtube')">YouTube</button>
+      <button onclick="quick('github')">GitHub</button>
+    </div>
+
   </div>
 </div>
 
@@ -223,36 +195,27 @@ iframe{flex:1;width:100%;border:1px solid #000;}
   <div class="start-header">Windows 95</div>
   <div class="start-item" onclick="openWindow('computer')">Computer</div>
   <div class="start-item" onclick="openWindow('notepad')">Notepad</div>
-  <div class="start-item" onclick="openWindow('paint')">Paint</div>
   <div class="start-item" onclick="openWindow('browser')">Internet</div>
 </div>
 
 <!-- TASKBAR -->
 <div class="taskbar">
   <div class="start-btn" onclick="toggleStart()">Start</div>
-  <div id="taskbar-windows"></div>
   <div class="clock" id="clock">12:00 AM</div>
 </div>
 
 <script>
-let z=10;
-let history=[],index=-1;
-
-/* WINDOW SYSTEM */
 function openWindow(id){
-  const w=document.getElementById(id);
-  w.style.display="block";
-  w.style.zIndex=++z;
+  document.getElementById(id).style.display="block";
 }
 
 function closeWindow(id){
   document.getElementById(id).style.display="none";
 }
 
-/* START */
 function toggleStart(){
   const m=document.getElementById("startMenu");
-  m.style.display=m.style.display==="block"?"none":"block";
+  m.style.display = m.style.display==="block"?"none":"block";
 }
 
 /* CLOCK */
@@ -262,18 +225,14 @@ setInterval(()=>{
   const a=h>=12?"PM":"AM";
   h=h%12||12;
   if(m<10)m="0"+m;
-  document.getElementById("clock").textContent=h+":"+m+" "+a;
+  document.getElementById("clock").innerText=`${h}:${m} ${a}`;
 },1000);
 
 /* SMART BROWSER */
 function smartURL(input){
-  input=input.trim();
+  input=input.toLowerCase().trim();
 
   if(input.includes("youtube")){
-    let id=input.split("v=")[1];
-    if(id){
-      return "https://www.youtube.com/embed/"+id;
-    }
     return "https://www.youtube.com/results?search_query="+encodeURIComponent(input);
   }
 
@@ -292,39 +251,37 @@ function smartURL(input){
   return input;
 }
 
+/* REAL FIX: OPEN IN NEW TAB */
 function loadPage(){
-  const frame=document.getElementById("browserView");
-  const url=smartURL(document.getElementById("url").value);
+  let url=document.getElementById("url").value;
+  url=smartURL(url);
+
+  document.getElementById("status").innerText="Opening...";
 
   let bar=document.getElementById("loadBar");
   bar.style.width="0%";
 
   let p=0;
-  let int=setInterval(()=>{
-    p+=10;
+  let i=setInterval(()=>{
+    p+=20;
     bar.style.width=p+"%";
-    if(p>=100) clearInterval(int);
-  },40);
+    if(p>=100) clearInterval(i);
+  },50);
 
-  frame.src=url;
-
-  history=history.slice(0,index+1);
-  history.push(url);
-  index++;
+  setTimeout(()=>{
+    window.open(url,"_blank"); // ✅ THIS FIXES EVERYTHING
+    document.getElementById("status").innerText="Opened in new tab";
+  },300);
 }
 
-function goBack(){
-  if(index>0){
-    index--;
-    document.getElementById("browserView").src=history[index];
-  }
-}
+/* QUICK BUTTONS */
+function quick(site){
+  let url="";
+  if(site==="google") url="https://google.com";
+  if(site==="youtube") url="https://youtube.com";
+  if(site==="github") url="https://github.com";
 
-function goForward(){
-  if(index<history.length-1){
-    index++;
-    document.getElementById("browserView").src=history[index];
-  }
+  window.open(url,"_blank");
 }
 </script>
 
