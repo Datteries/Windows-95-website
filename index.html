@@ -97,7 +97,6 @@ button, input, textarea{
   align-items:center;
 }
 
-/* Start Button */
 .start-btn{
   display:flex;
   align-items:center;
@@ -115,7 +114,6 @@ button, input, textarea{
   box-shadow: inset 2px 2px #000, inset -2px -2px #fff;
 }
 
-/* Clock */
 .clock{
   margin-left:auto;
   margin-right:8px;
@@ -125,7 +123,6 @@ button, input, textarea{
   font-size:13px;
 }
 
-/* Start Menu */
 .start-menu{
   position:absolute;
   bottom:34px;
@@ -173,6 +170,52 @@ iframe{
   border:1px solid #000;
   background:white;
 }
+
+/* NEW PAINT UI */
+.paint-body{
+  display:flex;
+  height:calc(100% - 70px);
+}
+
+.toolbar{
+  width:60px;
+  border-right:2px solid #fff;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:4px;
+  padding:4px;
+}
+
+.tool{
+  width:24px;
+  height:24px;
+  background:#e0e0e0;
+  border:2px solid #fff;
+  box-shadow: inset -2px -2px #000, inset 2px 2px #fff;
+}
+
+.canvas-area{
+  flex:1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#808080;
+}
+
+.palette{
+  display:flex;
+  flex-wrap:wrap;
+  padding:4px;
+  border-top:2px solid #fff;
+}
+
+.color-box{
+  width:20px;
+  height:20px;
+  margin:2px;
+  border:1px solid black;
+  cursor:pointer;
+}
 </style>
 </head>
 
@@ -202,18 +245,35 @@ iframe{
   </div>
 </div>
 
-<!-- Paint -->
-<div id="paint" class="window" style="top:160px;left:260px;">
+<!-- UPDATED PAINT -->
+<div id="paint" class="window" style="top:160px;left:260px; width:520px; height:400px;">
   <div class="title-bar">Paint <div class="close-btn" onclick="closeWindow('paint')">X</div></div>
-  <div class="content">
-    <input type="color" id="color">
-    <input type="range" id="size" min="1" max="20" value="3">
-    <button onclick="clearCanvas()">Clear</button>
-    <canvas id="canvas" width="360" height="220"></canvas>
+
+  <div style="padding:3px;border-bottom:2px solid #fff;font-size:13px;">
+    File Edit View Image Colors Help
   </div>
+
+  <div class="paint-body">
+    <div class="toolbar">
+      <div class="tool"></div><div class="tool"></div>
+      <div class="tool"></div><div class="tool"></div>
+      <div class="tool"></div><div class="tool"></div>
+    </div>
+
+    <div class="canvas-area">
+      <canvas id="canvas" width="360" height="220"></canvas>
+    </div>
+  </div>
+
+  <div class="palette" id="palette"></div>
+
+  <!-- keep old controls hidden but functional -->
+  <input type="color" id="color" style="display:none;">
+  <input type="range" id="size" min="1" max="20" value="3" style="display:none;">
+  <button onclick="clearCanvas()" style="display:none;">Clear</button>
 </div>
 
-<!-- Browser -->
+<!-- Browser (UNCHANGED) -->
 <div id="browser" class="window" style="top:100px;left:300px;">
   <div class="title-bar">🌐 Browser <div class="close-btn" onclick="closeWindow('browser')">X</div></div>
   <div class="content">
@@ -236,7 +296,6 @@ iframe{
 <!-- Taskbar -->
 <div class="taskbar">
   <div class="start-btn" onclick="toggleStart()"> Start</div>
-
   <div id="clock" class="clock">12:00 AM</div>
 </div>
 
@@ -268,16 +327,11 @@ function updateClock(){
   const now = new Date();
   let h = now.getHours();
   let m = now.getMinutes();
-
   const ampm = h >= 12 ? "PM" : "AM";
-  h = h % 12;
-  if(h === 0) h = 12;
-
+  h = h % 12 || 12;
   if(m < 10) m = "0" + m;
-
   document.getElementById("clock").textContent = h + ":" + m + " " + ampm;
 }
-
 setInterval(updateClock, 1000);
 updateClock();
 
@@ -312,17 +366,18 @@ function loadPage(){
   frame.src=url;
 }
 
-/* Paint */
+/* Paint (same logic, enhanced palette) */
 const canvas=document.getElementById('canvas');
 const ctx=canvas.getContext('2d');
 let draw=false;
+let currentColor="#000";
 
 canvas.addEventListener('mousedown',()=>draw=true);
 canvas.addEventListener('mouseup',()=>draw=false);
 canvas.addEventListener('mousemove',e=>{
   if(!draw)return;
   const r=canvas.getBoundingClientRect();
-  ctx.fillStyle=document.getElementById('color').value;
+  ctx.fillStyle=currentColor;
   const s=document.getElementById('size').value;
   ctx.beginPath();
   ctx.arc(e.clientX-r.left,e.clientY-r.top,s,0,Math.PI*2);
@@ -332,6 +387,24 @@ canvas.addEventListener('mousemove',e=>{
 function clearCanvas(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
 }
+
+/* Palette */
+const paletteColors=[
+"#000","#808080","#fff","#800000","#ff0000","#808000","#ffff00",
+"#008000","#00ff00","#008080","#00ffff","#000080","#0000ff","#800080","#ff00ff"
+];
+
+const palette=document.getElementById('palette');
+paletteColors.forEach(c=>{
+  const d=document.createElement('div');
+  d.className='color-box';
+  d.style.background=c;
+  d.onclick=()=>{
+    currentColor=c;
+    document.getElementById('color').value=c;
+  };
+  palette.appendChild(d);
+});
 
 /* Drag windows */
 window.addEventListener('mousedown',e=>{
